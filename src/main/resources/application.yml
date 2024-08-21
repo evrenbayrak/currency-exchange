@@ -1,0 +1,13 @@
+server:
+  port: 8092
+  servlet:
+    context-path: /currency
+
+spring:
+  application:
+    name: currency-exchange
+
+external:
+  api:
+    url: http://api.currencylayer.com
+    access_key: {ACCESS_KEY}
