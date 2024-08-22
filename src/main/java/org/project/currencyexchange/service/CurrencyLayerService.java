@@ -1,11 +1,13 @@
 package org.project.currencyexchange.service;
 
 import org.project.currencyexchange.model.api.CurrencyLayerResponse;
-import org.project.currencyexchange.model.dto.ExchangeRateDto;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @Service
 public class CurrencyLayerService implements ExternalExchangeApi {
@@ -22,22 +24,16 @@ public class CurrencyLayerService implements ExternalExchangeApi {
         this.accessKey = accessKey;
     }
 
-
     @Override
-    public ExchangeRateDto getExchangeRate(String baseCurrency, String targetCurrency) {
-        String url = String.format("%s/live?access_key=%s&source=%s&currencies=%s&format=1",
-                apiUrl, accessKey, baseCurrency, targetCurrency);
+    @Cacheable(value = "exchangeRates", key = "#baseCurrency", unless = "#result == null")
+    public Map<String, Double> getExchangeRates(String baseCurrency) {
+        String url = String.format("%s/live?access_key=%s&source=%s&format=1",
+                apiUrl, accessKey, baseCurrency);
 
         ResponseEntity<CurrencyLayerResponse> responseEntity = restTemplate.getForEntity(url, CurrencyLayerResponse.class);
         CurrencyLayerResponse response = responseEntity.getBody();
-
-        if (response != null && response.isSuccess()) {
-            double exchangeRate = response.getQuotes().get(baseCurrency + targetCurrency);
-            return new ExchangeRateDto(exchangeRate);
-        } else {
-            throw new RuntimeException("Failed to fetch exchange rates from CurrencyLayer API");
-        }
+        System.out.println("CurrencyLayerService.callExternalApi returned from api");
+        return response.getQuotes();
     }
-
 
 }

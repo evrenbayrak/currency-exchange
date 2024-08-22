@@ -1,7 +1,7 @@
 package org.project.currencyexchange.service;
 
-import org.project.currencyexchange.model.dto.ExchangeRateDto;
+import java.util.Map;
 
 public interface ExternalExchangeApi {
-    ExchangeRateDto getExchangeRate(String baseCurrency, String targetCurrency);
+    Map<String, Double> getExchangeRates(String baseCurrency);
 }

@@ -11,7 +11,8 @@ public class ExchangeService {
     private final ExternalExchangeApi externalExchangeApi;
 
     public ExchangeRateDto getExchangeRate(String baseCurrency, String targetCurrency) {
-        return externalExchangeApi.getExchangeRate(baseCurrency, targetCurrency);
+        double exchangeRate = externalExchangeApi.getExchangeRates(baseCurrency).get(baseCurrency+targetCurrency);
+        return new ExchangeRateDto(exchangeRate);
     }
 
 }
