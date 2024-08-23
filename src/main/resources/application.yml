@@ -20,7 +20,11 @@ spring:
       enabled: true
       path: /h2-console
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 external:
   api:
     url: http://api.currencylayer.com
-    access_key: {ACCESS_KEY}
+    access_key: 2362a6119e55364b274a49c46830983f
