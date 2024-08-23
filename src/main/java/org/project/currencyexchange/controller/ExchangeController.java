@@ -19,7 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -95,6 +98,21 @@ public class ExchangeController {
             @RequestParam(defaultValue = "0") @Min(value = 0, message = "Page number cannot be negative") int page,
             @RequestParam(defaultValue = "10") @Min(value = 1, message = "Page size must be at least 1") int size){
         return ResponseEntity.ok(exchangeService.getConversionsByDate(date, PageRequest.of(page, size)));
+    }
+
+    @Operation(summary = "Get Supported Currencies",
+            description = "Returns all supported currencies with their codes and names")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request successful",
+                    content = @Content(schema = @Schema(implementation = Map.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ExchangeErrorResponse.class)))
+    })
+    @GetMapping("/supported-currencies")
+    public ResponseEntity<Map<String, String>> getSupportedCurrencies() {
+        Map<String, String> currencies = Arrays.stream(ExchangeCurrency.values())
+                .collect(Collectors.toMap(ExchangeCurrency::name, ExchangeCurrency::getCurrencyName));
+        return ResponseEntity.ok(currencies);
     }
 
 }
