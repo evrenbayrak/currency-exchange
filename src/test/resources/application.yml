@@ -1,0 +1,26 @@
+server:
+  port: 8092
+  servlet:
+    context-path: /currency
+
+spring:
+  application:
+    name: currency-exchange
+  datasource:
+    url: jdbc:h2:mem:jpatest
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  flyway:
+    table: flyway_exchange_schema_history
+
+caching:
+  exchange:
+    ttl: 60 # in seconds
+
+external:
+  api:
+    url: http://api.currencylayer.com
+    access_key: fake-key
