@@ -3,6 +3,7 @@ package org.project.currencyexchange.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice
@@ -73,6 +75,20 @@ public class ExchangeExceptionHandler extends ResponseEntityExceptionHandler {
                 .forEach(error -> details.add(new InvalidFieldInfo(((FieldError) error).getField(),
                         error.getDefaultMessage(),
                         ObjectUtils.nullSafeToString(((FieldError) error).getRejectedValue()))));
+        return buildErrorMessage(ExchangeErrorCode.BAD_REQUEST, details, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected final ResponseEntity<Object> handleTypeMismatch(TypeMismatchException exception, HttpHeaders headers,
+                                                              HttpStatusCode status, WebRequest request) {
+        log.error("Error Occurred! {}, Error Message: {}", exception.getClass().getSimpleName(),
+                exception.getMessage(), exception);
+        List<InvalidFieldInfo> details = new ArrayList<>();
+        String fieldName = exception.getPropertyName();
+        String invalidValue = Objects.requireNonNull(exception.getValue()).toString();
+        String message = String.format("Invalid value '%s' for field '%s'", invalidValue, fieldName);
+        InvalidFieldInfo invalidFieldInfo = new InvalidFieldInfo(fieldName, message, invalidValue);
+        details.add(invalidFieldInfo);
         return buildErrorMessage(ExchangeErrorCode.BAD_REQUEST, details, HttpStatus.BAD_REQUEST);
     }
 
