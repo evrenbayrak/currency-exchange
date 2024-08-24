@@ -26,7 +26,7 @@ public class CurrencyLayerService implements ExternalExchangeApi {
 
     public CurrencyLayerService(RestClient restClient,
                                 @Value("${external.api.url}") String apiUrl,
-                                @Value("${external.api.access_key}") String accessKey) {
+                                @Value("${external.api.access_key:}") String accessKey) {
         this.restClient = restClient;
         this.apiUrl = apiUrl;
         this.accessKey = accessKey;
