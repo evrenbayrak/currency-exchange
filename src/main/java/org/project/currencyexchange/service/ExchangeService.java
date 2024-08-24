@@ -12,25 +12,28 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ExchangeService {
-
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
     private final ExternalExchangeApi externalExchangeApi;
     private final ConversionHistoryRepository conversionHistoryRepository;
 
     public ExchangeRateDto getExchangeRate(String baseCurrency, String targetCurrency) {
-        double exchangeRate = retrieveExchangeRate(baseCurrency, targetCurrency);
+        BigDecimal exchangeRate = retrieveExchangeRate(baseCurrency, targetCurrency);
         return new ExchangeRateDto(exchangeRate);
     }
 
     public ConversionResponse convertAmount(ConversionRequest conversionRequest) {
-        double exchangeRate = retrieveExchangeRate(conversionRequest.baseCurrency().name(),
+        BigDecimal exchangeRate = retrieveExchangeRate(conversionRequest.baseCurrency().name(),
                 conversionRequest.targetCurrency().name());
-        double convertedAmount = exchangeRate * conversionRequest.amount();
+        BigDecimal convertedAmount = exchangeRate.multiply(conversionRequest.amount());
         String transactionId = UUID.randomUUID().toString();
         ConversionResponse response = new ConversionResponse(transactionId, convertedAmount);
         saveResult(conversionRequest, response);
@@ -64,8 +67,9 @@ public class ExchangeService {
 
     }
 
-    private double retrieveExchangeRate(String baseCurrency, String targetCurrency) {
-        return externalExchangeApi.getExchangeRates(baseCurrency).get(baseCurrency + targetCurrency);
+    private BigDecimal retrieveExchangeRate(String baseCurrency, String targetCurrency) {
+        BigDecimal exchangeRate = externalExchangeApi.getExchangeRates(baseCurrency).get(baseCurrency + targetCurrency);
+        return exchangeRate.setScale(3, RoundingMode.HALF_UP);
     }
 
     private ConversionHistoryResponse convertToDto(ConversionHistory history) {

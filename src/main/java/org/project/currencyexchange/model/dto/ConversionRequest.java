@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
+
 @Schema(description = "Request object for converting currency amounts")
 public record ConversionRequest(
         @Schema(description = "The base currency from which the amount will be converted",
@@ -17,6 +19,6 @@ public record ConversionRequest(
         @Schema(description = "The amount in the base currency that needs to be converted",
                 example = "10.0")
         @Positive(message = "Amount must be greater than zero")
-        double amount
+        BigDecimal amount
 ) {
 }

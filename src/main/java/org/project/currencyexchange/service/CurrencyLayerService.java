@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
@@ -26,7 +27,7 @@ public class CurrencyLayerService implements ExternalExchangeApi {
 
     @Override
     @Cacheable(value = "exchangeRates", key = "#baseCurrency", unless = "#result == null")
-    public Map<String, Double> getExchangeRates(String baseCurrency) {
+    public Map<String, BigDecimal> getExchangeRates(String baseCurrency) {
         String url = String.format("%s/live?access_key=%s&source=%s&format=1",
                 apiUrl, accessKey, baseCurrency);
 

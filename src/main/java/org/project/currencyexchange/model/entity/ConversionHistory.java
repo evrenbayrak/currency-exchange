@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.currencyexchange.model.dto.ExchangeCurrency;
 
+import java.math.BigDecimal;
+
 
 @Builder
 @Getter
@@ -26,9 +28,9 @@ public class ConversionHistory extends BaseAudit {
     private ExchangeCurrency targetCurrency;
 
     @Column(name = "amount", nullable = false)
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "converted_amount", nullable = false)
-    private double convertedAmount;
+    private BigDecimal convertedAmount;
 
 }

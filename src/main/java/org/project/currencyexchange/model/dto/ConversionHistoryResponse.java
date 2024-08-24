@@ -2,6 +2,7 @@ package org.project.currencyexchange.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Schema(description = "Response object containing details of a currency conversion transaction")
@@ -16,10 +17,10 @@ public record ConversionHistoryResponse(
         ExchangeCurrency targetCurrency,
         @Schema(description = "The amount in the base currency",
                 example = "100.0")
-        double baseAmount,
+        BigDecimal baseAmount,
         @Schema(description = "The converted amount in the target currency",
                 example = "100.0")
-        double conversionAmount,
+        BigDecimal conversionAmount,
         @Schema(description = "The date and time when the conversion occurred")
         LocalDateTime conversionDate
 ) {
