@@ -26,6 +26,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+caching:
+  exchange:
+    ttl: 60 # in seconds
+
 external:
   api:
     url: http://api.currencylayer.com

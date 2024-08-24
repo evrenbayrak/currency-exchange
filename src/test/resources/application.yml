@@ -16,6 +16,10 @@ spring:
   flyway:
     table: flyway_exchange_schema_history
 
+caching:
+  exchange:
+    ttl: 60 # in seconds
+
 external:
   api:
     url: http://api.currencylayer.com

@@ -1,6 +1,7 @@
 package org.project.currencyexchange.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -12,11 +13,14 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class CacheConfiguration {
 
+    @Value("${caching.exchange.ttl}")
+    private int cachingTimeToLive;
+
     @Bean
     public CaffeineCacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("exchangeRates");
         cacheManager.setCaffeine(Caffeine.newBuilder()
-                .expireAfterWrite(20, TimeUnit.SECONDS)); //TODO
+                .expireAfterWrite(cachingTimeToLive, TimeUnit.SECONDS));
         return cacheManager;
     }
 }
