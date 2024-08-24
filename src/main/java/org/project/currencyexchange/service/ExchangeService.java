@@ -14,14 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ExchangeService {
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
+
     private final ExternalExchangeApi externalExchangeApi;
     private final ConversionHistoryRepository conversionHistoryRepository;
 
@@ -40,16 +39,6 @@ public class ExchangeService {
         return response;
     }
 
-    private void saveResult(ConversionRequest request, ConversionResponse response) {
-        ConversionHistory conversionHistory = ConversionHistory.builder()
-                .transactionId(response.transactionId())
-                .convertedAmount(response.conversionAmount())
-                .amount(request.amount())
-                .baseCurrency(request.baseCurrency())
-                .targetCurrency(request.targetCurrency())
-                .build();
-        conversionHistoryRepository.save(conversionHistory);
-    }
 
     public ConversionHistoryResponse getConversionByTransactionId(UUID transactionId) {
         return conversionHistoryRepository.findById(transactionId.toString())
@@ -70,6 +59,17 @@ public class ExchangeService {
     private BigDecimal retrieveExchangeRate(String baseCurrency, String targetCurrency) {
         BigDecimal exchangeRate = externalExchangeApi.getExchangeRates(baseCurrency).get(baseCurrency + targetCurrency);
         return exchangeRate.setScale(3, RoundingMode.HALF_UP);
+    }
+
+    private void saveResult(ConversionRequest request, ConversionResponse response) {
+        ConversionHistory conversionHistory = ConversionHistory.builder()
+                .transactionId(response.transactionId())
+                .convertedAmount(response.conversionAmount())
+                .amount(request.amount())
+                .baseCurrency(request.baseCurrency())
+                .targetCurrency(request.targetCurrency())
+                .build();
+        conversionHistoryRepository.save(conversionHistory);
     }
 
     private ConversionHistoryResponse convertToDto(ConversionHistory history) {

@@ -27,4 +27,4 @@ springdoc:
 external:
   api:
     url: http://api.currencylayer.com
-    access_key: 2362a6119e55364b274a49c46830983f
+    access_key: {API_KEY}
