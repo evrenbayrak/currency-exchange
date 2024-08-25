@@ -20,7 +20,8 @@ The Currency Exchange Service is a Spring Boot application that provides currenc
     - [Get Supported Currencies](#get-supported-currencies)
 5. [Swagger UI](#swagger-ui)
 6. [H2 Console](#h2-console)
-7. [License](#license)
+7. [API Error Codes](#api-error-codes)
+8. [License](#license)
 
 ## Live Demo
 
@@ -263,6 +264,21 @@ The application uses an in-memory H2 database for development and testing. To ac
 - **JDBC URL**: `jdbc:h2:mem:testdb`
 - **Username**: `sa`
 - **Password**: `password`
+
+## API Error Codes
+
+The following error codes may be returned by the API in various error scenarios:
+
+- **`"bad_request"`**:  Invalid request. Please check the input parameters.
+- **`"entity_not_found"`**:  The requested entity was not found.
+- **`"internal_server_error"`**:  An unexpected error occurred on the server.
+- **`"api_limit_exceeded"`**:  The external API rate limit has been exceeded.
+- **`"invalid_api_credentials"`**:  The API credentials provided are invalid or the user is inactive.
+- **`"invalid_api_request"`**:  The API request was invalid or improperly formatted.
+- **`"external_api_error"`**:  An error occurred while fetching data from the external API.
+- **`"external_api_timeout"`**:  The request to the external API timed out.
+
+These error codes help in identifying and handling different types of errors that might occur while interacting with the Currency Exchange Service. You can use these codes in your application to provide more informative error messages to users or to implement specific error-handling logic.
 
 ## License
 
